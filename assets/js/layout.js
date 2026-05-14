@@ -3,42 +3,42 @@
  * Injects header + sidebar + mobile bottom nav into every page.
  */
 (function () {
-    'use strict';
+  'use strict';
 
-    const NAV_ITEMS = [
-        { href: 'dashboard.html',         icon: '📊', text: 'Dashboard',  id: 'dashboard' },
-        { href: 'vehicles.html',          icon: '🚛', text: 'Vehicles',   id: 'vehicles' },
-        { href: 'drivers.html',           icon: '👥', text: 'Drivers',    id: 'drivers' },
-        { href: 'expenses.html',          icon: '💰', text: 'Expenses',   id: 'expenses' },
-        { href: 'billing.html',           icon: '🧾', text: 'Billing',    id: 'billing' },
-        { href: 'reports.html',           icon: '📈', text: 'Reports',    id: 'reports' },
-        { href: 'transit_checklist.html', icon: '📋', text: 'Checklist',  id: 'transit_checklist' },
-        { href: 'notifications.html',     icon: '🔔', text: 'Alerts',     id: 'notifications' },
-        { href: 'settings.html',          icon: '⚙️', text: 'Settings',   id: 'settings' },
-    ];
+  const NAV_ITEMS = [
+    { href: 'dashboard.html', icon: '📊', text: 'Dashboard', id: 'dashboard' },
+    { href: 'vehicles.html', icon: '🚛', text: 'Vehicles', id: 'vehicles' },
+    { href: 'drivers.html', icon: '👥', text: 'Drivers', id: 'drivers' },
+    { href: 'expenses.html', icon: '💰', text: 'Expenses', id: 'expenses' },
+    { href: 'billing.html', icon: '🧾', text: 'Billing', id: 'billing' },
+    { href: 'reports.html', icon: '📈', text: 'Reports', id: 'reports' },
+    { href: 'transit_checklist.html', icon: '📋', text: 'Checklist', id: 'transit_checklist' },
+    { href: 'notifications.html', icon: '🔔', text: 'Alerts', id: 'notifications' },
+    { href: 'settings.html', icon: '⚙️', text: 'Settings', id: 'settings' },
+  ];
 
-    // Bottom nav — 5 most-used items
-    const BOTTOM_NAV = [
-        { href: 'dashboard.html',     icon: '📊', text: 'Home',      id: 'dashboard' },
-        { href: 'vehicles.html',      icon: '🚛', text: 'Vehicles',  id: 'vehicles' },
-        { href: 'drivers.html',       icon: '👥', text: 'Drivers',   id: 'drivers' },
-        { href: 'expenses.html',      icon: '💰', text: 'Expenses',  id: 'expenses' },
-        { href: 'notifications.html', icon: '🔔', text: 'Alerts',    id: 'notifications' },
-    ];
+  // Bottom nav — 5 most-used items
+  const BOTTOM_NAV = [
+    { href: 'dashboard.html', icon: '📊', text: 'Home', id: 'dashboard' },
+    { href: 'vehicles.html', icon: '🚛', text: 'Vehicles', id: 'vehicles' },
+    { href: 'drivers.html', icon: '👥', text: 'Drivers', id: 'drivers' },
+    { href: 'expenses.html', icon: '💰', text: 'Expenses', id: 'expenses' },
+    { href: 'notifications.html', icon: '🔔', text: 'Alerts', id: 'notifications' },
+  ];
 
-    function getCurrentPage() {
-        const p = window.location.pathname.split('/').pop().replace('.html', '');
-        return p || 'index';
-    }
+  function getCurrentPage() {
+    const p = window.location.pathname.split('/').pop().replace('.html', '');
+    return p || 'index';
+  }
 
-    function isActive(itemId) {
-        const cur = getCurrentPage();
-        if (itemId === 'vehicles' && cur === 'vehicle-detail') return true;
-        return cur === itemId;
-    }
+  function isActive(itemId) {
+    const cur = getCurrentPage();
+    if (itemId === 'vehicles' && cur === 'vehicle-detail') return true;
+    return cur === itemId;
+  }
 
-    function buildHeader() {
-        return `
+  function buildHeader() {
+    return `
 <header class="app-header" id="appHeader">
   <div class="header-left">
     <button class="hamburger" id="menuToggle" aria-label="Toggle menu">
@@ -67,17 +67,17 @@
     </div>
   </div>
 </header>`;
-    }
+  }
 
-    function buildSidebar() {
-        const navItems = NAV_ITEMS.map(item => `
+  function buildSidebar() {
+    const navItems = NAV_ITEMS.map(item => `
     <a href="${item.href}" class="nav-item${isActive(item.id) ? ' active' : ''}">
       <span class="nav-icon">${item.icon}</span>
       <span class="nav-text">${item.text}</span>
       ${item.id === 'notifications' ? '<span class="nav-badge" id="sidebarNotifBadge">8</span>' : ''}
     </a>`).join('');
 
-        return `
+    return `
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
     <div class="logo">🚛 <span>LogisticsPro</span></div>
@@ -96,74 +96,91 @@
   </div>
 </aside>
 <div class="sidebar-overlay" id="sidebarOverlay"></div>`;
-    }
+  }
 
-    function buildBottomNav() {
-        const items = BOTTOM_NAV.map(item => `
+  function buildBottomNav() {
+    const items = BOTTOM_NAV.map(item => `
   <a href="${item.href}" class="bottom-nav-item${isActive(item.id) ? ' active' : ''}">
     <span class="bottom-nav-icon">${item.icon}</span>
     <span class="bottom-nav-text">${item.text}</span>
     ${item.id === 'notifications' ? '<span class="bottom-nav-badge" id="bottomNotifBadge">8</span>' : ''}
   </a>`).join('');
-        return `<nav class="bottom-nav" id="bottomNav">${items}</nav>`;
-    }
+    return `<nav class="bottom-nav" id="bottomNav">${items}</nav>`;
+  }
 
-    function inject() {
-        const body = document.body;
-        // Skip login page
-        if (body.classList.contains('login-page') || getCurrentPage() === 'index' || getCurrentPage() === '') return;
-        // Inject
-        body.insertAdjacentHTML('afterbegin', buildHeader() + buildSidebar() + buildBottomNav());
-        setupSidebar();
-        setupUserMenu();
-        updateUserDisplay();
-    }
+  function inject() {
+    const body = document.body;
+    // Skip login page
+    if (body.classList.contains('login-page') || getCurrentPage() === 'index' || getCurrentPage() === '') return;
+    // Inject
+    body.insertAdjacentHTML('afterbegin', buildHeader() + buildSidebar() + buildBottomNav());
+    setupSidebar();
+    setupUserMenu();
+    updateUserDisplay();
+    updateNotifBadge();
+  }
+  function updateNotifBadge() {
+    try {
+      const stored = sessionStorage.getItem('alerts');
+      const alerts = stored ? JSON.parse(stored) : [];
+      const count = alerts.length;
 
-    function setupSidebar() {
-        const toggle   = document.getElementById('menuToggle');
-        const sidebar  = document.getElementById('sidebar');
-        const overlay  = document.getElementById('sidebarOverlay');
-        const closeBtn = document.getElementById('sidebarClose');
+      ['notifBadge', 'sidebarNotifBadge', 'bottomNotifBadge'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = count;
+          // Hide badge if 0
+          el.style.display = count === 0 ? 'none' : '';
+        }
+      });
+    } catch (e) { }
+  }
 
-        function openSidebar()  { sidebar.classList.add('open');    overlay.classList.add('open');    document.body.style.overflow = 'hidden'; }
-        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
+  function setupSidebar() {
+    const toggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const closeBtn = document.getElementById('sidebarClose');
 
-        if (toggle)   toggle.addEventListener('click', openSidebar);
-        if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
-        if (overlay)  overlay.addEventListener('click', closeSidebar);
+    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow = ''; }
 
-        ['logoutBtn', 'sidebarLogout'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (typeof handleLogout === 'function') handleLogout();
-                else { if (typeof clearTokens === 'function') clearTokens(); window.location.href = 'index.html'; }
-            });
-        });
-    }
+    if (toggle) toggle.addEventListener('click', openSidebar);
+    if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
 
-    function setupUserMenu() {
-        const btn      = document.getElementById('userBtn');
-        const dropdown = document.getElementById('userDropdown');
-        if (!btn || !dropdown) return;
-        btn.addEventListener('click', function (e) { e.stopPropagation(); dropdown.classList.toggle('open'); });
-        document.addEventListener('click', function () { dropdown.classList.remove('open'); });
-    }
+    ['logoutBtn', 'sidebarLogout'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (typeof handleLogout === 'function') handleLogout();
+        else { if (typeof clearTokens === 'function') clearTokens(); window.location.href = 'index.html'; }
+      });
+    });
+  }
 
-    function updateUserDisplay() {
-        try {
-            const user = JSON.parse(localStorage.getItem('userData') || '{}');
-            const name = user.username || user.email || 'Admin';
-            ['headerUserName', 'sidebarUserName'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = name;
-            });
-        } catch (e) {}
-    }
+  function setupUserMenu() {
+    const btn = document.getElementById('userBtn');
+    const dropdown = document.getElementById('userDropdown');
+    if (!btn || !dropdown) return;
+    btn.addEventListener('click', function (e) { e.stopPropagation(); dropdown.classList.toggle('open'); });
+    document.addEventListener('click', function () { dropdown.classList.remove('open'); });
+  }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', inject);
-    } else {
-        inject();
-    }
+  function updateUserDisplay() {
+    try {
+      const user = JSON.parse(localStorage.getItem('userData') || '{}');
+      const name = user.username || user.email || 'Admin';
+      ['headerUserName', 'sidebarUserName'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = name;
+      });
+    } catch (e) { }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inject);
+  } else {
+    inject();
+  }
 })();
