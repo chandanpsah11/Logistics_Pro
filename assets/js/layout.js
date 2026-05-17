@@ -206,6 +206,7 @@
             var vehicles = Array.isArray(res) ? res : (res.results || []);
             var alerts = generateAlerts(vehicles);
             sessionStorage.setItem('alerts', JSON.stringify(alerts));
+            document.dispatchEvent(new Event('alertsReady'));
             updateNotifBadge();
           })
           .fail(function () { /* silent — badge stays hidden */ });

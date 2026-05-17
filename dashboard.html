@@ -258,12 +258,11 @@
 
                 if (stored !== null) {
                     renderDashboardAlerts(JSON.parse(stored));
-                    return;
+
                 }
 
                 // Cache not ready yet — wait for layout.js background fetch
-                document.addEventListener('alertsReady', function onReady() {
-                    document.removeEventListener('alertsReady', onReady);
+                document.addEventListener('alertsReady', function () {
                     const fresh = sessionStorage.getItem('alerts');
                     renderDashboardAlerts(fresh ? JSON.parse(fresh) : []);
                 });
